@@ -1,17 +1,16 @@
-FROM node:10.15.3-slim
-
-RUN apt-get update \
-    && apt-get install -y nginx
+FROM node:alpine as builder
 
 WORKDIR /app
 
-COPY . /app/
+COPY . /app
+
+RUN yarn \
+    && yarn build
+
+FROM nginx:alpine
 
 EXPOSE 80
 
-RUN yarn \
-    && yarn build \
-    && cp -r dist/* /var/www/html \
-    && rm -rf /app
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 CMD [ "nginx", "-g", "daemon off;" ]
