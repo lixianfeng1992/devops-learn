@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN yarn --offline \
+RUN yarn \
     && yarn build
 
 FROM nginx:alpine
